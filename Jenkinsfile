@@ -11,7 +11,7 @@ pipeline {
   stage("run") {
    steps {
     sh ''' 
-    echo "Hello My World
+    echo "Hello My World"
 
     ls -trl
 	
