@@ -4,7 +4,9 @@ pipeline {
  stages{
   stage("git pull"){
    steps {
-    git url: "https://github.com/hikarusasa/gogo-curry.git", branch: 'master'
+    dir(gogocurry) {
+     git url: "https://github.com/hikarusasa/gogo-curry.git", branch: 'master'
+    }
    }
   }
 
