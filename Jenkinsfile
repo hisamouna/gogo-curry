@@ -5,7 +5,9 @@ pipeline {
   stage("git pull"){
    steps {
     dir(gogocurry) {
-     git url: "https://github.com/hikarusasa/gogo-curry.git", tag: ${TAG}
+     checkout scm: [$class: 'GitSCM', 
+      userRemoteConfigs: [[url: 'https://github.com/hikarusasa/gogo-curry.git']], 
+      branches: [[name: "refs/tags/${TAG}"]]], changelog: false, poll: false
     }
    }
   }
