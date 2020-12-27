@@ -1,60 +1,26 @@
-version: 2 # CircleCI 2.0 を使用します
-jobs: # 1 回の実行の基本作業単位
-  build: # ワークフローを使用しない実行では、エントリポイントとして `build` ジョブが必要です
-    docker: # Docker でステップを実行します
-      # CircleCI Go イメージは https://hub.docker.com/r/circleci/golang/ で入手できます
-      - image: circleci/golang:1.12 #
-      # CircleCI PostgreSQL イメージは https://hub.docker.com/r/circleci/postgres/ で入手できます
-    # ステップを実行するディレクトリ。 パスは Go Workspace の要件に従う必要があります。
-    working_directory: /go/src/github.com/hikarusasa/gogo-curry
+# Golang CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version
+      - image: circleci/golang:1.9
 
-    environment: # ビルド自体で使用する環境変数
-      TEST_RESULTS: /tmp/test-results # テスト結果を保存する場所のパス
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
 
-    steps: # `build` ジョブを構成するステップ
+    #### TEMPLATE_NOTE: go expects specific checkout path representing url
+    #### expecting it in the form of
+    ####   /go/src/github.com/circleci/go-tool
+    ####   /go/src/bitbucket.org/circleci/go-tool
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      - checkout
 
-      - checkout # ソース コードを作業ディレクトリにチェックアウトします
-      - run: mkdir -p $TEST_RESULTS # テスト結果を保存するディレクトリを作成します
-
-      - restore_cache: # 前回の実行以降の変更が検出されなかった場合、保存されているキャッシュを復元します
-      # 依存関係のキャッシュについては https://circleci.com/ja/docs/2.0/caching/ をお読みください
-          keys:
-            - v1-pkg-cache
-
-      # 通常、このステップはカスタム プライマリ イメージに記述されています
-      # この例では、説明のためにここにステップを追加しました
-
-      - run: go get github.com/lib/pq
-
-      # CircleCI の Go Docker イメージには netcat が含まれています
-      # このため、DB ポートをポーリングして、ポートが開放されていることを確認してから処理を続行できます
-
-      - run:
-          name: Postgres が準備できるまで待機
-          command: |
-            for i in `seq 1 10`;
-            do
-              echo "$i"
-              sleep 1s
-            done
-
-      - run:
-          name: 単体テストの実行
-          environment: # データベース URL と移行ファイルのパスを格納する環境変数
-            CONTACTS_DB_URL: "postgres://circleci-demo-go@localhost:5432/circle_test?sslmode=disable"
-            CONTACTS_DB_MIGRATIONS: /go/src/github.com/CircleCI-Public/circleci-demo-go/db/migrations
-          # テスト結果を $TEST_RESULTS ディレクトリに保存します
-          command: |
-            echo "TEst"
-
-      - save_cache: # キャッシュを /go/pkg ディレクトリに保存します
-          key: v1-pkg-cache
-          paths:
-            - "/go/pkg"
-
-      - store_artifacts: # アーティファクト (https://circleci.com/ja/docs/2.0/artifacts/) に表示するためにテスト結果をアップロードします
-          path: /tmp/test-results
-          destination: raw-test-output
-
-      - store_test_results: # テスト サマリー (https://circleci.com/ja/docs/2.0/collect-test-data/) に表示するためにテスト結果をアップロードします
-          path: /tmp/test-results
+      # specify any bash command here prefixed with `run: `
+      - run: go get -v -t -d ./...
+      - run: go test -v ./...
