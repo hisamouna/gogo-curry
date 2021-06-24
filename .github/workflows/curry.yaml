@@ -1,0 +1,13 @@
+name: Curry
+on:
+  push:
+    branches:
+      - feature/curry
+
+jobs:
+  example:
+    steps:
+      - name: echo env
+        run: echo ${STAGE}
+        env:
+          STAGE: staging
