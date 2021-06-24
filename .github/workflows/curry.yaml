@@ -6,6 +6,8 @@ on:
 
 jobs:
   example:
+    runs-on: ubuntu-20.04
+    name: env
     steps:
       - name: echo env
         run: echo ${STAGE}
