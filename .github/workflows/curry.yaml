@@ -24,7 +24,14 @@ jobs:
         run: |-
           echo "Hello $FIRST_NAME $middle_name $Last_Name, today is Monday"
           echo "DAY_OF_WEEK $DAY_OF_WEEK"
+          expr 1 + 1 > output.log
         env:
           FIRST_NAME: Mona
           middle_name: The
           Last_Name: Octocat
+      - name: Upload output file
+        uses: actions/upload-artifact@v2
+        run: "ls -tlr"
+        with:
+          name: output-log-file
+          path: output.log
