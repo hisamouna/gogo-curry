@@ -29,9 +29,10 @@ jobs:
           FIRST_NAME: Mona
           middle_name: The
           Last_Name: Octocat
+      - name: "Ls"
+        run: "ls -tlr"
       - name: Upload output file
         uses: actions/upload-artifact@v2
-        run: "ls -tlr"
         with:
           name: output-log-file
           path: output.log
