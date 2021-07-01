@@ -29,7 +29,7 @@ jobs:
           FIRST_NAME: Mona
           middle_name: The
           Last_Name: Octocat
-      - uses: actions/checkout@2
+      - uses: actions/checkout@v2
       - name: "Ls"
         run: "ls -tlr"
       - name: Upload output file
