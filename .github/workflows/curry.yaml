@@ -13,3 +13,18 @@ jobs:
         run: echo ${STAGE}
         env:
           STAGE: staging
+  example-2:
+    runs-on: ubuntu-18.04
+    name: public-env
+    env:
+      DAY_OF_WEEK: Mon
+    steps:
+      - name: "Hello world when it's Monday"
+        if: ${{ .env.DAY_OF_WEEK == 'Mon' }}
+        run: >-
+          echo "Hello $FIRST_NAME $middle_name $Last_Name, today is Monday"
+          echo "DAY_OF_WEEK $DAY_OF_WEEK"
+        env:
+          FIRST_NAME: Mona
+          middle_name: The
+          Last_Name: Octocat
