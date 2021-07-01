@@ -26,6 +26,8 @@ jobs:
         if: ${{ env.DAY_OF_WEEK == 'Mon' }}
         run: |-
           echo "Hello $FIRST_NAME $middle_name $Last_Name, today is Monday"
+          MESSAGE="$FIRST_NAME ||| $middle_name || $Lat_Name"
+          echo ::set-output name=message::$MESSAGE
           git branch
           echo "DAY_OF_WEEK $DAY_OF_WEEK"
           expr 1 + 1 > output.log
@@ -33,8 +35,12 @@ jobs:
           FIRST_NAME: Mona
           middle_name: The
           Last_Name: Octocat
+        id: generator
       - name: "Ls"
         run: "ls -tlr"
+      - name: set-outputer
+        run: |-
+          echo "Output: ${{ steps.generator.outputs.message }}"
       - name: Upload output file
         uses: actions/upload-artifact@v2
         with:
